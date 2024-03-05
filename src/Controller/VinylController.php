@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use function Symfony\Component\String\u;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class VinylController extends AbstractController
 {
-    #[Route("/")]
-    function homepage(): Response
+    #[Route('/', name: 'app_homepage')]
+    public function homepage(): Response
     {
         $tracks = [
             ['song' => 'Gangsta\'s Paradise', 'artist' => 'Coolio'],
@@ -20,19 +20,20 @@ class VinylController extends AbstractController
             ['song' => 'On Bended Knee', 'artist' => 'Boyz II Men'],
             ['song' => 'Fantasy', 'artist' => 'Mariah Carey'],
         ];
-        return $this->render('vinyl/homepage.html.twig', [
-            'title' => 'IsetKélibia', 'tracks' => $tracks,
 
+        return $this->render('vinyl/homepage.html.twig', [
+            'title' => 'PB & Jams',
+            'tracks' => $tracks,
         ]);
     }
-    #[Route("/browse/{slug}")]
-    function browse($slug = null): Response
+
+    #[Route('/browse/{slug}', name: 'app_browse')]
+    public function browse(string $slug = null): Response
     {
-        if ($slug) {
-            $title = "Genre:" . u(str_replace("-", " ", $slug))->title(true);
-        } else {
-            $title = "allGenre";
-        }
-        return new Response($title);
+        $genre = $slug ? u(str_replace('-', ' ', $slug))->title(true) : null;
+
+        return $this->render('vinyl/browse.html.twig', [
+            'genre' => $genre
+        ]);
     }
 }
